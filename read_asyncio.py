@@ -6,17 +6,19 @@ import time
 
 limit = asyncio.Semaphore(10)
 
-
 # define a coroutine for a task
-async def read_single_data(file:str):
+async def network_io(file:str):
     async with limit:
         # block for a moment, simulate network io time
-        await asyncio.sleep(1) 
+        await asyncio.sleep(1)     
+        return file
 
-        df = pd.read_csv(file,header=None)
 
-        # return a value
-        return df
+async def read_single_data(file:str):
+    # Use await keyward when using the value
+    f = network_io(file)
+    df = pd.read_csv(await f, header=None)
+    return df
 
 
 # custom coroutine
